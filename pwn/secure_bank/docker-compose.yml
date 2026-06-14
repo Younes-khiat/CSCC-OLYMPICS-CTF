@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  securebank:
+    build: .
+    container_name: securebank
+    ports:
+      - "4444:4444"  # Expose port 4444

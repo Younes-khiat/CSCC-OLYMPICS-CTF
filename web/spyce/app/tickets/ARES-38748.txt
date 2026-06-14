@@ -1,0 +1,5 @@
+ARES VOYAGES — BOARDING PASS
+Booking : ARES-38748
+Name    : rrr
+Mission : explorer
+Status  : CONFIRMED

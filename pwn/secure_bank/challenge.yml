@@ -1,0 +1,7 @@
+name: "SecureBank"
+author: "c0ff33"
+category: "pwn"
+description: |
+  Welcome to SecureBank! This banking application allows you to manage your account.
+  However, it seems to have a vulnerability. Can you exploit it to access the secret account and retrieve the flag?
+value: 500

@@ -1,0 +1,7 @@
+name: "FmtLeak"
+author: "c0ff33"
+category: "pwn"
+description: |
+  A chatty terminal trusts user formatting a bit too much. Nudge the output
+  in your favor and uncover the hidden reward.
+value: 500

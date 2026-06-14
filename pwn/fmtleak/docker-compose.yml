@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  fmtleak:
+    build: .
+    container_name: fmtleak
+    ports:
+      - "4441:4441"  # Host 4441 -> container 4441

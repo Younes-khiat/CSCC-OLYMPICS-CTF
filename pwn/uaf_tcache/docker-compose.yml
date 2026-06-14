@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  uaf_tcache:
+    build: .
+    container_name: uaf_tcache
+    ports:
+      - "4443:4443"  # Host 4443 -> container 4443

@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  ret2win:
+    build: .
+    container_name: ret2win
+    ports:
+      - "4442:4442"  # Host 4442 -> container 4442

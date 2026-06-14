@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARES VOYAGES — Mars Travel Co.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --mars-red: #c1440e;
+    --mars-orange: #e8651a;
+    --dust: #d4956a;
+    --deep-space: #000408;
+    --panel: rgba(10,20,35,0.85);
+    --glow: #ff6b35;
+    --text-dim: #8899aa;
+    --font-display: 'Orbitron', monospace;
+    --font-mono: 'Share Tech Mono', monospace;
+    --font-body: 'Rajdhani', sans-serif;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--deep-space);
+    color: #ddeeff;
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* ── STARFIELD ── */
+  #space {
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 0;
+    background: #000408;
+  }
+
+  /* ── SHIP ── */
+  #endurance {
+    width: 220px;
+    top: 18%;
+    left: -250px;
+    position: fixed;
+    z-index: 1;
+    filter: drop-shadow(0 0 12px rgba(255,107,53,0.4));
+    animation: spin 18000ms linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  /* ── LAYOUT ── */
+  #site-wrap {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid rgba(200,100,50,0.2);
+    background: rgba(0,4,8,0.7);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 900;
+    letter-spacing: .15em;
+    color: var(--glow);
+    text-shadow: 0 0 20px rgba(255,107,53,0.5);
+  }
+  .nav-logo span { color: #fff; }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
+  }
+  nav a {
+    font-family: var(--font-mono);
+    font-size: .8rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    letter-spacing: .1em;
+    transition: color .2s;
+  }
+  nav a:hover { color: var(--glow); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  .hero-label {
+    font-family: var(--font-mono);
+    font-size: .75rem;
+    letter-spacing: .3em;
+    color: var(--mars-orange);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: .05em;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--mars-orange);
+    display: block;
+  }
+  .hero-sub {
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: var(--text-dim);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+  .btn-primary {
+    font-family: var(--font-display);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .2em;
+    padding: .9rem 2.8rem;
+    background: var(--mars-red);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background .2s, box-shadow .2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover {
+    background: var(--mars-orange);
+    box-shadow: 0 0 30px rgba(255,107,53,0.4);
+  }
+  .btn-ghost {
+    font-family: var(--font-display);
+    font-size: .75rem;
+    letter-spacing: .15em;
+    padding: .85rem 2rem;
+    background: transparent;
+    color: var(--dust);
+    border: 1px solid rgba(212,149,106,0.4);
+    cursor: pointer;
+    margin-left: 1rem;
+    transition: border-color .2s, color .2s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--dust); color: #fff; }
+  .btn-download {
+    font-family: var(--font-display);
+    font-size: .7rem;
+    letter-spacing: .15em;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid var(--mars-orange);
+    color: var(--glow);
+    padding: .6rem 1.2rem;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .btn-download:hover { background: var(--mars-red); color: #fff; border-color: #fff; }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    padding: 2rem 0;
+    border-top: 1px solid rgba(200,100,50,0.15);
+    border-bottom: 1px solid rgba(200,100,50,0.15);
+    background: rgba(0,4,8,0.5);
+  }
+  .stat { text-align: center; }
+  .stat-val {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--glow);
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: .65rem;
+    letter-spacing: .2em;
+    color: var(--text-dim);
+    margin-top: .3rem;
+  }
+
+  /* ── SECTION ── */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-tag {
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    letter-spacing: .3em;
+    color: var(--mars-orange);
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: .05em;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  .section-desc {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: var(--text-dim);
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+  }
+
+  /* ── TRIPS GRID ── */
+  .trips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .trip-card {
+    background: var(--panel);
+    border: 1px solid rgba(200,100,50,0.2);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .2s, transform .2s;
+  }
+  .trip-card:hover {
+    border-color: rgba(255,107,53,0.5);
+    transform: translateY(-4px);
+  }
+  .trip-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--mars-red), var(--mars-orange));
+  }
+  .trip-badge {
+    font-family: var(--font-mono);
+    font-size: .65rem;
+    letter-spacing: .2em;
+    color: var(--mars-orange);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .trip-name {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: .5rem;
+    letter-spacing: .05em;
+  }
+  .trip-desc {
+    font-size: .95rem;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .trip-price {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--glow);
+  }
+  .trip-price span {
+    font-size: .75rem;
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-weight: 400;
+  }
+  .trip-details {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: .72rem;
+    color: var(--text-dim);
+  }
+  .trip-details i { color: var(--dust); }
+  .trip-btn {
+    display: block;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: .8rem;
+    font-family: var(--font-display);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .15em;
+    background: transparent;
+    border: 1px solid rgba(193,68,14,0.5);
+    color: var(--dust);
+    cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  .trip-btn:hover { background: var(--mars-red); color: #fff; }
+  .trip-card.featured { border-color: rgba(255,107,53,0.4); }
+  .trip-card.featured::after {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: 1rem; right: 1rem;
+    font-family: var(--font-mono);
+    font-size: .6rem;
+    letter-spacing: .2em;
+    color: var(--mars-orange);
+    border: 1px solid rgba(255,107,53,0.4);
+    padding: .2rem .6rem;
+  }
+
+  /* ── BOOKING PANEL ── */
+  .booking-panel {
+    background: var(--panel);
+    border: 1px solid rgba(200,100,50,0.2);
+    padding: 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  .booking-panel h2 { grid-column: 1 / -1; }
+  .booking-panel .section-tag { grid-column: 1 / -1; }
+  .form-group { display: flex; flex-direction: column; gap: .5rem; }
+  .form-group label {
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    letter-spacing: .15em;
+    color: var(--text-dim);
+  }
+  .form-group input,
+  .form-group select {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(200,100,50,0.25);
+    color: #fff;
+    padding: .8rem 1rem;
+    font-family: var(--font-mono);
+    font-size: .85rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--glow); }
+  .form-group select option { background: #0a1422; }
+  .form-full { grid-column: 1 / -1; }
+  .submit-row {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: .5rem;
+    flex-wrap: wrap;
+  }
+  .form-note {
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    color: var(--text-dim);
+  }
+  .ticket-row {
+    grid-column: 1 / -1;
+    background: rgba(0,0,0,0.4);
+    margin-top: 1rem;
+    padding: 1rem;
+    border-left: 3px solid var(--mars-orange);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .ticket-info {
+    font-family: var(--font-mono);
+    font-size: .75rem;
+    color: #bbccdd;
+  }
+  .ticket-info strong {
+    color: var(--glow);
+    font-weight: bold;
+  }
+
+  /* ── TERMINAL PANEL ── */
+  .terminal-section {
+    padding: 4rem 2rem;
+    background: rgba(0,4,8,0.6);
+    border-top: 1px solid rgba(200,100,50,0.15);
+    border-bottom: 1px solid rgba(200,100,50,0.15);
+  }
+  .terminal-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  .terminal-text .section-tag { margin-bottom: 1rem; }
+  .terminal-text h2 { margin-bottom: .8rem; }
+  .terminal-text p {
+    font-size: 1rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  .terminal-box {
+    background: #050d16;
+    border: 1px solid rgba(200,100,50,0.3);
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: .8rem;
+    overflow: hidden;
+  }
+  .terminal-titlebar {
+    background: rgba(193,68,14,0.15);
+    padding: .5rem 1rem;
+    border-bottom: 1px solid rgba(200,100,50,0.2);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .7rem;
+    color: var(--text-dim);
+    letter-spacing: .1em;
+  }
+  .term-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .terminal-body { padding: 1.2rem 1.5rem; line-height: 1.8; }
+  .t-prompt { color: var(--mars-orange); }
+  .t-path { color: #5588ff; }
+  .t-out { color: #99cc77; }
+  .t-dim { color: #445566; }
+  .t-err { color: #ff6655; }
+  .t-flag { color: var(--glow); font-weight: bold; background: rgba(255,107,53,0.1); padding: 2px 6px; }
+
+  footer {
+    padding: 3rem 3rem 2rem;
+    border-top: 1px solid rgba(200,100,50,0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-logo {
+    font-family: var(--font-display);
+    font-size: .9rem;
+    font-weight: 900;
+    letter-spacing: .15em;
+    color: var(--glow);
+  }
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: .7rem;
+    color: var(--text-dim);
+    letter-spacing: .1em;
+  }
+  .mars-planet {
+    position: fixed;
+    right: -120px;
+    bottom: -120px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #c1440e, #6b1a05 60%, #2a0800);
+    z-index: 0;
+    opacity: .25;
+    pointer-events: none;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(200,100,50,0.12);
+    margin: 0;
+  }
+  .launch-countdown {
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+  .launch-countdown .section-tag { justify-content: center; display: flex; }
+  .countdown-row {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+  .cd-unit { text-align: center; }
+  .cd-val {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--glow);
+    display: block;
+    line-height: 1;
+  }
+  .cd-label {
+    font-family: var(--font-mono);
+    font-size: .6rem;
+    letter-spacing: .2em;
+    color: var(--text-dim);
+    margin-top: .4rem;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="space"></canvas>
+<svg id="endurance" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1280 800" style="enable-background:new 0 0 1280 800;">
+<style>.st0{fill:#898485;stroke:#3A3939;stroke-width:2;stroke-miterlimit:10;}.st1{fill:#A0A0A0;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}.st2{fill:#FFFFFF;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}.st3{fill:#FFFFFF;}.st4{fill:none;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}.st5{fill:#231F20;stroke:#E6E7E8;stroke-width:6;stroke-linecap:round;stroke-miterlimit:10;}.st6{fill:#5E5E5E;stroke:#3A3939;stroke-width:6;stroke-linecap:round;stroke-miterlimit:10;}.st7{fill:#0F0F0F;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}.st8{fill:#0F0F0F;stroke:#FCFCFC;stroke-width:2;stroke-miterlimit:10;}.st9{fill:#F9F9F9;stroke:#000000;stroke-width:2;stroke-miterlimit:10;}</style>
+<path class="st0" d="M623.7,412.3h-5.2c-10.7,0-19.4-8.7-19.4-19.4v-19.2c0-10.7,8.7-19.4,19.4-19.4h5.2c10.7,0,19.4,8.7,19.4,19.4v19.2C643.2,403.6,634.5,412.3,623.7,412.3z"/>
+<path class="st1" d="M778.7,393.6h-65.1c-1.4,0-2.6-1.1-2.6-2.6v-21.4c0-1.4,1.1-2.6,2.6-2.6h65.1c1.4,0,2.6,1.1,2.6,2.6V391C781.2,392.4,780.1,393.6,778.7,393.6z"/>
+<path class="st2" d="M723.1,398.8h-87.8c-1.4,0-2.6-1.1-2.6-2.6v-30c0-1.4,1.1-2.6,2.6-2.6h87.8c1.4,0,2.6,1.1,2.6,2.6v30C725.7,397.7,724.5,398.8,723.1,398.8z"/>
+<path class="st2" d="M879.6,401.7h-108c-1.4,0-2.6-1.1-2.6-2.6v-37.6c0-1.4,1.1-2.6,2.6-2.6h108c1.4,0,2.6,1.1,2.6,2.6v37.6C882.1,400.5,881,401.7,879.6,401.7z"/>
+<g><path class="st3" d="M631.4,88.3c163.3,0,295.7,132.4,295.7,295.7c0,163.3-132.4,295.7-295.7,295.7c-163.3,0-295.7-132.4-295.7-295.7C335.7,220.7,468.1,88.3,631.4,88.3z M909.9,384.4c0-155.2-125.8-281.1-281.1-281.1c-155.2,0-281.1,125.8-281.1,281.1c0,155.2,125.8,281.1,281.1,281.1C784,665.4,909.9,539.6,909.9,384.4z"/></g>
+<path class="st2" d="M655.2,141.5h-47.7c-8.7,0-15.8-7.1-15.8-15.8V13.9c0-3.7,3-6.7,6.7-6.7h66.1c3.7,0,6.7,3,6.7,6.7v111.7C671.1,134.4,664,141.5,655.2,141.5z"/>
+<path class="st2" d="M536.1,151.4l-57.2,33c-3.2,1.8-7.3,0.8-9.1-2.4L409.3,77.3c-1.8-3.2-0.8-7.3,2.4-9.1l57.2-33c3.2-1.8,7.3-0.8,9.1,2.4l60.5,104.7C540.4,145.5,539.3,149.6,536.1,151.4z"/>
+<path class="st2" d="M382,359.4v47.8c0,8.7-7.1,15.8-15.8,15.8H254.4c-3.7,0-6.7-3-6.7-6.7v-66.1c0-3.7,3-6.7,6.7-6.7h111.8C374.9,343.6,382,350.6,382,359.4z"/>
+<path class="st2" d="M609.7,621h47.6c8.8,0,15.9,7.1,15.9,15.9v111.8c0,3.7-3,6.7-6.7,6.7h-66.1c-3.7,0-6.7-3-6.7-6.7V637C593.7,628.2,600.9,621,609.7,621z"/>
+<path class="st2" d="M870.5,414.3v-66.1c0-3.7,3-6.7,6.7-6.7h121c3.7,0,6.7,3,6.7,6.7v66.1c0,3.7-3,6.7-6.7,6.7h-121C873.4,421,870.5,418,870.5,414.3z"/>
+<circle class="st1" cx="428.8" cy="178.6" r="27.7"/><circle class="st1" cx="557.9" cy="104.1" r="27.7"/>
+<circle class="st1" cx="707" cy="104.1" r="27.7"/><circle class="st1" cx="836.1" cy="178.6" r="27.7"/>
+<circle class="st1" cx="909.9" cy="306.5" r="27.7"/><circle class="st1" cx="909.9" cy="456.1" r="27.7"/>
+<circle class="st1" cx="836.1" cy="585.9" r="27.7"/><circle class="st1" cx="707" cy="660.4" r="27.7"/>
+<circle class="st1" cx="557.9" cy="660.4" r="27.7"/><circle class="st1" cx="428.8" cy="585.9" r="27.7"/>
+<circle class="st1" cx="354.3" cy="456.8" r="27.7"/><circle class="st1" cx="354.3" cy="307.7" r="27.7"/>
+<circle class="st5" cx="636.2" cy="381.3" r="15"/>
+</svg>
+<div class="mars-planet"></div>
+<div id="site-wrap">
+  <nav>
+    <div class="nav-logo">ARES<span> VOYAGES</span></div>
+    <ul>
+      <li><a href="#trips">MISSIONS</a></li>
+      <li><a href="#book">BOOK</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+      <li><a href="/app/status">SYSTEM STATUS</a></li>
+    </ul>
+  </nav>
+
+  <div class="hero">
+    <p class="hero-label">⬡ Interplanetary Travel Division ⬡</p>
+    <h1>YOUR SEAT<em>TO MARS</em></h1>
+    <p class="hero-sub">Ares Voyages offers the galaxy's first commercial Mars transit service. Seven months. 225 million kilometres. A new life on the red planet.</p>
+    <div><a href="#trips" class="btn-primary">VIEW MISSIONS</a><a href="#book" class="btn-ghost">BOOK NOW</a></div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-val">47</div><div class="stat-label">LAUNCHES COMPLETED</div></div>
+    <div class="stat"><div class="stat-val">3,204</div><div class="stat-label">COLONISTS TRANSPORTED</div></div>
+    <div class="stat"><div class="stat-val">100%</div><div class="stat-label">MISSION SUCCESS RATE</div></div>
+    <div class="stat"><div class="stat-val">209d</div><div class="stat-label">AVG TRANSIT TIME</div></div>
+  </div>
+
+  <div class="launch-countdown"><p class="section-tag">◈ NEXT LAUNCH WINDOW</p><div class="countdown-row"><div class="cd-unit"><span class="cd-val" id="cd-days">--</span><div class="cd-label">DAYS</div></div><div class="cd-unit"><span class="cd-val" id="cd-hrs">--</span><div class="cd-label">HOURS</div></div><div class="cd-unit"><span class="cd-val" id="cd-min">--</span><div class="cd-label">MINUTES</div></div><div class="cd-unit"><span class="cd-val" id="cd-sec">--</span><div class="cd-label">SECONDS</div></div></div></div>
+  <hr class="divider">
+
+  <section id="trips"><p class="section-tag">◈ AVAILABLE MISSIONS</p><h2>CHOOSE YOUR TRAJECTORY</h2><p class="section-desc">Three mission tiers, each with full life-support and real-time comms. All departures from Launch Complex 39, Cape Canaveral.</p><div class="trips-grid"><div class="trip-card"><span class="trip-badge">◇ ECONOMY CLASS</span><div class="trip-name">PIONEER PASSAGE</div><div class="trip-desc">Shared crew quarters, communal dining, 20kg luggage allowance. The essential Mars experience for early settlers.</div><div class="trip-price">$180,000 <span>/ SEAT</span></div><div class="trip-details"><span>⏱ 209 DAYS</span><span>⚡ ION DRIVE</span><span>👤 12 CREW</span></div><button class="trip-btn" onclick="selectTrip('pioneer')">SELECT MISSION →</button></div><div class="trip-card featured"><span class="trip-badge">◈ BUSINESS CLASS</span><div class="trip-name">EXPLORER SUITE</div><div class="trip-desc">Semi-private cabin, premium rations, 50kg luggage. Dedicated mission specialist assigned to your berth.</div><div class="trip-price">$490,000 <span>/ SEAT</span></div><div class="trip-details"><span>⏱ 190 DAYS</span><span>⚡ PLASMA DRIVE</span><span>👤 6 CREW</span></div><button class="trip-btn" onclick="selectTrip('explorer')">SELECT MISSION →</button></div><div class="trip-card"><span class="trip-badge">◆ PRIVATE CHARTER</span><div class="trip-name">SOVEREIGN TRANSIT</div><div class="trip-desc">Full vessel charter, custom cargo, zero-G leisure suite, direct comms to Mission Control. Unlimited luggage.</div><div class="trip-price">$3,200,000 <span>/ VESSEL</span></div><div class="trip-details"><span>⏱ 158 DAYS</span><span>⚡ FUSION DRIVE</span><span>👤 2 CREW</span></div><button class="trip-btn" onclick="selectTrip('sovereign')">SELECT MISSION →</button></div></div></section>
+
+  <div class="terminal-section"><div class="terminal-inner"><div class="terminal-text"><p class="section-tag">◈ MISSION CONTROL</p><h2>SYSTEM<br>DIAGNOSTICS</h2><p>Real-time telemetry from our fleet. All vessels transmit health data continuously. Check your booking status at any time via the command interface.</p></div><div class="terminal-box"><div class="terminal-titlebar"><div class="term-dot" style="background:#ff5f56"></div><div class="term-dot" style="background:#ffbd2e"></div><div class="term-dot" style="background:#27c93f"></div>&nbsp;mission-control@ares-voyages ~ bash</div><div class="terminal-body"><div><span class="t-prompt">user@ares</span>:<span class="t-path">~/app</span>$ ls -la</div><div class="t-dim">total 24</div><div class="t-out">drwxr-xr-x 3 www-data www-data 4096 Jun  7 09:12 .</div><div class="t-out">-rw-r--r-- 1 www-data www-data 8421 Jun  7 09:12 app.py</div><div class="t-out">-rw-r--r-- 1 www-data www-data 2103 Jun  7 09:12 utils.py</div><div class="t-out">drwxr-xr-x 2 www-data www-data 4096 Jun  7 09:12 __pycache__</div><br><div><span class="t-prompt">user@ares</span>:<span class="t-path">~/app</span>$ cat utils.py</div><div class="t-dim"># Utility module for Ares Voyages</div><div class="t-dim"># Booking validation helpers</div><br><div class="t-out">def validate_seat(seat_id):</div><div class="t-out">&nbsp;&nbsp;&nbsp;&nbsp;return seat_id.isalnum()</div><br><div><span class="t-prompt">user@ares</span>:<span class="t-path">~/app</span>$ <span style="animation: blink 1s step-end infinite">▋</span></div></div></div></div></div>
+
+  <section id="book"><div class="booking-panel"><p class="section-tag">◈ MISSION REGISTRATION</p><h2>BOOK YOUR SEAT</h2><div class="form-group"><label>FULL NAME</label><input type="text" id="f-name" placeholder="Commander Jane Doe"></div><div class="form-group"><label>EMAIL ADDRESS</label><input type="email" id="f-email" placeholder="jane@example.com"></div><div class="form-group"><label>MISSION CLASS</label><select id="f-mission"><option value="">SELECT A MISSION</option><option value="pioneer">Pioneer Passage — $180,000</option><option value="explorer">Explorer Suite — $490,000</option><option value="sovereign">Sovereign Transit — $3,200,000</option></select></div><div class="form-group"><label>DEPARTURE WINDOW</label><select id="f-window"><option value="">SELECT WINDOW</option><option>2026-Q4 — November 12, 2026</option><option>2028-Q2 — April 3, 2028</option><option>2030-Q1 — January 29, 2030</option></select></div><div class="form-group form-full"><label>PASSPORT PHOTO &nbsp;<span style="color:rgba(136,153,170,0.5);font-size:.65rem">JPG / PNG · MAX 2MB · REQUIRED FOR INTERPLANETARY VISA</span></label><div id="upload-zone" style="border:1px dashed rgba(200,100,50,0.35);padding:1.8rem;text-align:center;cursor:pointer;transition:border-color .2s;" onclick="document.getElementById('f-photo').click()" ondragover="event.preventDefault();this.style.borderColor='var(--glow)'" ondragleave="this.style.borderColor='rgba(200,100,50,0.35)'" ondrop="handleDrop(event)"><input type="file" id="f-photo" accept="image/*" style="display:none" onchange="showFile(this.files[0])"><div id="upload-placeholder"><div style="font-size:2rem;margin-bottom:.5rem">📷</div><div style="font-family:var(--font-mono);font-size:.75rem;color:var(--text-dim)">DRAG & DROP OR CLICK TO UPLOAD</div></div><div id="upload-preview" style="display:none"><img id="preview-img" style="max-height:120px;max-width:100%;border:1px solid rgba(200,100,50,0.3)"><div id="preview-name" style="font-family:var(--font-mono);font-size:.7rem;color:var(--dust);margin-top:.5rem"></div></div></div></div><div class="submit-row"><button class="btn-primary" onclick="submitBooking()">SUBMIT APPLICATION</button><span class="form-note" id="form-msg"></span></div><div id="ticket-download-area" class="ticket-row" style="display: none;"></div></div></section>
+
+  <footer id="contact"><div><div class="footer-logo">ARES VOYAGES</div><p style="font-family:var(--font-mono);font-size:.7rem;color:var(--text-dim);margin-top:.4rem;">Launch Complex 39 · Cape Canaveral, FL 32920</p></div><div class="footer-copy">© 2026 ARES VOYAGES LLC — ALL RIGHTS RESERVED<br><span style="color:rgba(136,153,170,0.4)">CTF CHALLENGE · ARES{flag_hidden_in_bytecode}</span></div></footer>
+</div>
+
+<script>
+let currentTicketUrl = null;
+
+$(document).ready(function() {
+  let screenH = $(window).height(), screenW = $(window).width();
+  let canvas = $('#space');
+  canvas.attr('height', screenH).attr('width', screenW);
+  let context = canvas[0].getContext('2d');
+  let stars = [];
+  for (let i = 0; i < 1800; i++) stars.push(new Star(Math.random() * screenW, Math.random() * screenH, 1 + Math.random() * 2, Math.random()));
+  setInterval(() => { context.clearRect(0, 0, screenW, screenH); stars.forEach(s => s.draw(context)); }, 20);
+  $('#endurance').animate({ left: '+=900px' }, 3000);
+});
+
+function Star(x, y, length, opacity) { this.x = x; this.y = y; this.length = length; this.opacity = opacity; this.factor = 1; this.increment = Math.random() * 0.03; }
+Star.prototype.draw = function(ctx) { ctx.save(); ctx.translate(this.x, this.y); if (this.opacity > 1) this.factor = -1; else if (this.opacity <= 0) { this.factor = 1; this.x = Math.random() * window.innerWidth; this.y = Math.random() * window.innerHeight; } this.opacity += this.increment * this.factor; ctx.beginPath(); for (let i = 5; i--;) { ctx.lineTo(0, this.length); ctx.translate(0, this.length); ctx.rotate(Math.PI * 2 / 10); ctx.lineTo(0, -this.length); ctx.translate(0, -this.length); ctx.rotate(-Math.PI * 6 / 10); } ctx.lineTo(0, this.length); ctx.closePath(); ctx.fillStyle = "rgba(255,255,200," + this.opacity + ")"; ctx.shadowBlur = 5; ctx.shadowColor = '#ffff33'; ctx.fill(); ctx.restore(); };
+
+let launch = new Date('2026-11-12T00:00:00Z');
+function updateCountdown() { let diff = launch - new Date(); if (diff <= 0) return; let d = Math.floor(diff / 86400000), h = Math.floor((diff % 86400000) / 3600000), m = Math.floor((diff % 3600000) / 60000), s = Math.floor((diff % 60000) / 1000); document.getElementById('cd-days').textContent = String(d).padStart(2,'0'); document.getElementById('cd-hrs').textContent = String(h).padStart(2,'0'); document.getElementById('cd-min').textContent = String(m).padStart(2,'0'); document.getElementById('cd-sec').textContent = String(s).padStart(2,'0'); }
+setInterval(updateCountdown, 1000); updateCountdown();
+
+function showFile(file) { if (!file) return; document.getElementById('upload-placeholder').style.display = 'none'; document.getElementById('upload-preview').style.display = 'block'; document.getElementById('preview-name').textContent = file.name; let reader = new FileReader(); reader.onload = e => document.getElementById('preview-img').src = e.target.result; reader.readAsDataURL(file); }
+function handleDrop(e) { e.preventDefault(); document.getElementById('upload-zone').style.borderColor = 'rgba(200,100,50,0.35)'; let file = e.dataTransfer.files[0]; if (!file) return; let dt = new DataTransfer(); dt.items.add(file); document.getElementById('f-photo').files = dt.files; showFile(file); }
+function selectTrip(tier) { document.getElementById('f-mission').value = tier; document.getElementById('book').scrollIntoView({ behavior: 'smooth' }); }
+
+function submitBooking() {
+  let name = document.getElementById('f-name').value.trim(), email = document.getElementById('f-email').value.trim(), mission = document.getElementById('f-mission').value, photo = document.getElementById('f-photo').files[0], msgSpan = document.getElementById('form-msg');
+  if (!name || !email || !mission) { msgSpan.textContent = '⚠ Please complete all required fields.'; msgSpan.style.color = '#ff6655'; return; }
+  if (!photo) { msgSpan.textContent = '⚠ Passport photo is required.'; msgSpan.style.color = '#ff6655'; return; }
+  msgSpan.textContent = '↑ Uploading…'; msgSpan.style.color = 'var(--dust)';
+  let fd = new FormData(); fd.append('name', name); fd.append('email', email); fd.append('mission', mission); fd.append('photo', photo, photo.name);
+  fetch('/api/book', { method: 'POST', body: fd }).then(r => r.json()).then(data => {
+    if (data.error) { msgSpan.textContent = '⚠ ' + data.error; msgSpan.style.color = '#ff6655'; return; }
+    msgSpan.textContent = '✓ Booking ' + data.booking_id + ' confirmed. Welcome aboard.'; msgSpan.style.color = '#99cc77';
+    if (data.ticket) { currentTicketUrl = data.ticket; renderTicketDownload(data.booking_id, currentTicketUrl); }
+  }).catch(() => { msgSpan.textContent = '⚠ Server error. Try again.'; msgSpan.style.color = '#ff6655'; });
+}
+
+function renderTicketDownload(bookingId, ticketEndpoint) {
+  let area = document.getElementById('ticket-download-area');
+  area.style.display = 'flex';
+  area.innerHTML = `<div class="ticket-info"><strong>${bookingId}</strong> — Boarding pass ready</div>
+                    <button class="btn-download" id="real-download-btn">⬇ DOWNLOAD TICKET</button>`;
+  document.getElementById('real-download-btn').addEventListener('click', () => {
+    if (ticketEndpoint) window.location.href = ticketEndpoint;
+    else alert("Ticket not available");
+  });
+}
+
+</script>
+</body>
+</html>

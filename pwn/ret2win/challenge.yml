@@ -1,0 +1,7 @@
+name: "Ret2Win"
+author: "c0ff33"
+category: "pwn"
+description: |
+  A tiny service hides a privileged routine behind careful input handling.
+  Find the right sequence to steer execution toward the prize.
+value: 500

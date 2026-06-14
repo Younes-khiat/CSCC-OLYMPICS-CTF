@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiha?</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.5s ease;
+        }
+        
+        body.default {
+            background-color: #f0f0f0;
+        }
+        
+        body.red {
+            background-color: #ff0000;
+        }
+        
+        #main-text {
+            font-size: 120px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #333;
+        }
+        
+        body.red #main-text {
+            color: white;
+        }
+        
+        #check-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        #check-button:hover {
+            background-color: #45a049;
+        }
+        
+        body.red #check-button {
+            display: none;
+        }
+        
+        #flag-display {
+            font-size: 36px;
+            color: #FFD700;
+            margin-top: 30px;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body class="default">
+    <div id="main-text">fiha?</div>
+    <button id="check-button" onclick="checkFiha()">Check</button>
+    <div id="flag-display"></div>
+    
+    <script>
+        function checkFiha() {
+            fetch('/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'fiha=true'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show the flag
+                    document.getElementById('flag-display').textContent = data.flag;
+                    document.getElementById('flag-display').style.display = 'block';
+                    document.body.className = 'default';
+                    document.getElementById('main-text').textContent = 'fiha!';
+                } else {
+                    // Turn page red and show mafihach
+                    document.body.className = 'red';
+                    document.getElementById('main-text').textContent = 'MAFIHACH';
+                    document.getElementById('flag-display').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

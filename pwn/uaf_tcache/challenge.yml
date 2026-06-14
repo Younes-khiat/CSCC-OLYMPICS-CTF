@@ -1,0 +1,7 @@
+name: "UAF Tcache"
+author: "c0ff33"
+category: "pwn"
+description: |
+  An old note manager keeps relying on freed data. Orchestrate creations and
+  deletions to slip into a privileged path and claim the secret.
+value: 500

@@ -1,0 +1,5 @@
+ARES VOYAGES — BOARDING PASS
+Booking : ARES-47511
+Name    : rrr
+Mission : explorer
+Status  : CONFIRMED
