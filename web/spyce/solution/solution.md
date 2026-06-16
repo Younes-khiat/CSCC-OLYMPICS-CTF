@@ -42,15 +42,14 @@ SECRET_MISSION_CODE = "CSCC{REDACTED}"
 ```
 
 Reading the `utils.py` :
-![[01.png]]
+![Reading utils.py](01.png)
 
 still redacted
-checking the remaining files we get the `pyc` 
-![[02.png]]
+checking the remaining files we get the `pyc` :
+![checking the remaining files we get the `pyc` ](02.png)
 
 **Decompiling PYC files:**
 we can use https://www.decompiler.com 
-
-![[03.png]]
+![Decompiling PYC files:](03.png)
 
 and we got the flag :`CSCC{r4nd0m_py_sh1t_38r88re888re88r838r838r8388}`
